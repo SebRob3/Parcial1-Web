@@ -1,5 +1,3 @@
-'use client';
-
 import "@/app/globals.css"
 import { AddCartButton } from "@/components/AddCartButton"
 import { Product } from "@/types/product";

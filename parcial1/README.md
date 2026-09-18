@@ -34,3 +34,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+# Respuestas parcial
+
+1. En el preparcial ya se habia considerado almacenar productos completos en el contexto de Cart usando la lista items, además, se utiliza useState para manejar los items y el setItems. 
+
+2. Para manejar los calculos y cambios de las listas se crean listas dentro del mismo contexto, junto con el calculo de totalItems y totalPrice con reduce.
+
+3. Se han creado los formularios utilizando zod y RHF, en la carpeta types se ha creado un checkout.ts donde se definen los errores, tipos y condiciones con zod, que posteriormente se utilizan en el formulario para validarlo utilizando errors.terms

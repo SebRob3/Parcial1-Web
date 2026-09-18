@@ -14,10 +14,12 @@ export function NavBar() {
                     <h1 >ShopHub</h1>
                 </Link>
 
-                <span className="cart-counter">
-                    <h2 className="cart"><FiShoppingCart /></h2>
-                    <div className="circle-num">{ totalItems }</div>
-                </span>
+                <Link href="/cart" className="cart-counter">
+                    <span className="cart-counter">
+                        <h2 className="cart"><FiShoppingCart /></h2>
+                        <div className="circle-num">{ totalItems }</div>
+                    </span>
+                </Link>
             </div>
         </header>
     )

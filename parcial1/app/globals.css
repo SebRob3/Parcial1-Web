@@ -158,3 +158,14 @@ body {
   border-radius: 32px;
   max-width: 60%;
 }
+.cart-view {
+  display: flex;
+  flex-direction: row;
+}
+
+.cart-summary {
+  height: 20%;
+  border-radius: 12px;
+  gap: 15px;
+  background-color: #1b253068;
+}

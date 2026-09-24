@@ -6,22 +6,22 @@ import { useCart } from "@/context/Cart";
 import { checkoutSchema, CheckoutFormData } from "@/types/checkout";
 import { ProductCart } from "@/components/ProductCart";
 
-function handleDisabled() {
-  return true
-}
-
 export default function CheckoutPage() {
   const { items, totalItems, clearCart, totalPrice } = useCart();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors, isSubmitSuccessful, isSubmitting },
     getValues,
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     mode: "onBlur",
   });
+
+  function handleDisabled() {
+    return Object.keys(errors).length > 0 || isSubmitting;
+  }
 
   function onSubmit(data: CheckoutFormData) {
     console.log("Datos válidos:", data);

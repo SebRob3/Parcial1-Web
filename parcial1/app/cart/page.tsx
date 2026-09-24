@@ -6,17 +6,18 @@ import Link from "next/link";
 import "@/app/globals.css"
 
 export default function cartView() {
-    const { items, totalPrice } = useCart();
+    const { items, totalPrice, totalItems } = useCart();
     return <div className="cart-view">
-    <div className="cart-products">
-        {items.map((product) => (<ProductCart product={product} key={product.id}></ProductCart>))}
-    </div>
+        <div className="cart-products">
+            {items.map((product) => (<ProductCart product={product} key={product.id}></ProductCart>))}
+        </div>
         <div>
             <div>
                 <div className="cart-summary">
-                    <h1 color="#7fffd4">Resumen de Compra:</h1>
-                    <p>Total: {totalPrice}</p>
-                    <Link href="/payments">Ir a Pagar</Link>
+                    <h1 className="summary-title">Resumen de Compra</h1>
+                    <p className="summary-info">Total price: {totalPrice}</p>
+                    <p className="summary-info">Total items: {totalItems}</p>
+                    <Link href="/payments" className="payments-button">Ir a Pagar</Link>
                 </div>
             </div>
         </div>

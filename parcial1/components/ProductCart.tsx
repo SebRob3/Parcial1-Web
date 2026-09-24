@@ -6,26 +6,26 @@ import { FaMinus } from "react-icons/fa6";
 import { useCart } from "@/context/Cart";
 
 function subtotal(product: Product) {
-    return (product.price*(product.quantity ? product.quantity : 0))
+    return (product.price * (product.quantity ? product.quantity : 0))
 }
 
-export function ProductCart({product}: {product: Product}) {
-    const {addCart, removeCart} = useCart()
+export function ProductCart({ product }: { product: Product }) {
+    const { addCart, removeCart } = useCart()
 
-    return <div>
-        <div>
+    return <div className="cart-product-detail">
+        <div className="image-container">
             <img src={product.thumbnail} alt={product.title} />
         </div>
-        <div>
-            <h1>{product.title}</h1>
+        <div className="product-info">
+            <h1 className="title-product">{product.title}</h1>
             <p>${subtotal(product)}</p>
             <p>{product.category}</p>
         </div>
-        <div>
-            <div>                
-                <span onClick={() => removeCart(product)}><FaMinus /></span>
-                <p>{product.quantity}</p>
-                <span onClick={() => addCart(product)}><IoMdAdd /></span>
+        <div className="quantity-button-sheet">
+            <div className="quantity-check">
+                <span onClick={() => removeCart(product)} className="quantity-modify"><FaMinus /></span>
+                <span className="quantity-display">{product.quantity}</span>
+                <span onClick={() => addCart(product)} className="quantity-modify"><IoMdAdd /></span>
             </div>
         </div>
     </div>

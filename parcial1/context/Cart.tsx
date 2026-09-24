@@ -40,9 +40,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     function clearCart() {
-        while (items.length > 0) {
-            items.pop()
-        }
+        setItems([])
     }
 
     const totalItems = items.reduce((sum, item) => sum + (item.quantity ?? 0), 0)

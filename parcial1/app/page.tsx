@@ -2,7 +2,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { Product } from "@/types/product";
 
 async function fetchProducts(): Promise<Product[]> {
-    const response = await fetch("https://dummyjson.com/products?limit=8&select=id,title,price,category,thumbnail,stock");
+    const response = await fetch("https://dummyjson.com/products?limit=20&select=id,title,price,category,thumbnail,stock");
 
     const data: { products: Product[] } = await response.json();
     return data.products;

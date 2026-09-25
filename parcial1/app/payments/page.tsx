@@ -1,111 +1,105 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useCart } from "@/context/Cart";
-import { checkoutSchema, CheckoutFormData } from "@/types/checkout";
+import { checkoutSchema } from "@/types/checkout";
 import { ProductCart } from "@/components/ProductCart";
+
+type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 export default function CheckoutPage() {
   const { items, totalItems, clearCart, totalPrice } = useCart();
 
+  const [completedName, setCompletedName] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitSuccessful, isSubmitting },
-    getValues,
+    reset,
+    formState: { errors, isValid, isSubmitting },
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     mode: "onBlur",
+    defaultValues: { fullName: "", email: "", paymentMethod: "", terms: false },
   });
 
-  function handleDisabled() {
-    return Object.keys(errors).length > 0 || isSubmitting;
-  }
-
-  function onSubmit(data: CheckoutFormData) {
-    console.log("Datos válidos:", data);
+  async function onSubmit(data: CheckoutFormData) {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     clearCart();
+    reset();
+    setCompletedName(data.fullName);
   }
 
-  if (items.length === 0 && !isSubmitSuccessful) {
+  if (completedName) {
     return (
-      <main className="p-6 max-w-lg mx-auto text-center">
-        <h1 className="text-2xl font-bold mb-2">Tu carrito está vacío</h1>
+      <main className="checkout-main checkout-confirmation">
+        <h1 className="checkout-title">Pago confirmado</h1>
+        <p>Gracias, {completedName}.</p>
       </main>
     );
   }
 
-  if (isSubmitSuccessful) {
+  if (items.length === 0) {
     return (
-      <main className="p-6 max-w-lg mx-auto text-center">
-        <h1 className="text-2xl font-bold mb-2">Pago confirmado</h1>
-        <p className="text-gray-600">Gracias, {getValues("fullName")}.</p>
+      <main className="checkout-main checkout-confirmation">
+        <h1 className="checkout-title">Tu carrito está vacío</h1>
       </main>
     );
   }
 
   return (
-    <main className="p-6 max-w-lg mx-auto flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">Finalizar compra</h1>
+    <main className="checkout-main">
+      <h1 className="checkout-title">Finalizar compra</h1>
 
       <div className="cart-products">
-          {items.map((product) => (<ProductCart product={product} key={product.id}></ProductCart>))}
+        {items.map((product) => (
+          <ProductCart product={product} key={product.id}></ProductCart>
+        ))}
       </div>
 
-      <div>
-        <p className="font-bold">{totalItems} productos en el carrito</p>
-        <p className="font-bold">Total: ${totalPrice}</p>
+      <div className="checkout-totals">
+        <p>{totalItems} productos en el carrito</p>
+        <p>Total: ${totalPrice}</p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
-          <label htmlFor="fullName" className="text-sm font-medium">
-            Nombre completo
-          </label>
-          <input id="fullName" {...register("fullName")} className="border rounded-md px-3 py-2" />
-          {errors.fullName && (
-            <span className="text-red-600 text-sm">{errors.fullName.message}</span>
-          )}
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="checkout-form">
+        <div className="form-field">
+          <label htmlFor="fullName">Nombre completo</label>
+          <input id="fullName" {...register("fullName")} />
+          {errors.fullName && <span className="form-error">{errors.fullName.message}</span>}
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="email" className="text-sm font-medium">
-            Correo electrónico
-          </label>
-          <input id="email" {...register("email")} className="border rounded-md px-3 py-2" />
-          {errors.email && (
-            <span className="text-red-600 text-sm">{errors.email.message}</span>
-          )}
+        <div className="form-field">
+          <label htmlFor="email">Correo electrónico</label>
+          <input id="email" type="email" {...register("email")} />
+          {errors.email && <span className="form-error">{errors.email.message}</span>}
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="cardNumber" className="text-sm font-medium">
-            Metodo de Pago
-          </label>
-          <select id="paymentMethod"
-            {...register("paymentMethod")}
-            className="border rounded-md px-3 py-2">
-              <option value="visa">visa</option>
-              <option value="mastercard">mastercard</option>
-            </select>
+        <div className="form-field">
+          <label htmlFor="paymentMethod">Metodo de Pago</label>
+          <select id="paymentMethod" {...register("paymentMethod")}>
+            <option value="">option</option>
+            <option value="visa">visa</option>
+            <option value="mastercard">mastercard</option>
+          </select>
           {errors.paymentMethod && (
-            <span className="text-red-600">{errors.paymentMethod.message}</span>
+            <span className="form-error">{errors.paymentMethod.message}</span>
           )}
         </div>
 
         <div>
-          <label><input type="checkbox" {...register("terms")}/>
-          <span>Acepto terminos y condiciones</span> {
-            errors.terms && (
-              <span className="text-red-600">{errors.terms.message}</span>
-            )
-          }
+          <label className="form-checkbox">
+            <input type="checkbox" {...register("terms")} />
+            <span>Acepto terminos y condiciones</span>
           </label>
+          {errors.terms && <span className="form-error">{errors.terms.message}</span>}
         </div>
 
-        <button type="submit" className="bg-blue-600 text-white rounded-md py-3 font-semibold" disabled={handleDisabled()}>
-          Pagar ${totalPrice}
+        <button type="submit" className="checkout-submit" disabled={!isValid || isSubmitting}>
+          {isSubmitting ? "Procesando..." : `Pagar $${totalPrice}`}
         </button>
       </form>
     </main>
